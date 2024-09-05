@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreTaskRequest;
-use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -13,15 +12,23 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+        return Task::all();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTaskRequest $request)
+    public function store(Request $request)
     {
-        //
+        $fields = $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'due_date' => 'date|date_format:Y-m-d|before:tomorrow',
+            'attachment' => 'file|mimetypes:image/jpeg,image/png,application/pdf,application/msword,video/mp4|max:10240',
+            'tags' => 'string'
+        ]);
+
+        $task = Task::create($fields);
     }
 
     /**
@@ -29,15 +36,15 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        //
+        return 'show';
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTaskRequest $request, Task $task)
+    public function update(Request $request, Task $task)
     {
-        //
+        return 'update';
     }
 
     /**
@@ -45,6 +52,6 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        return 'destroy';
     }
 }

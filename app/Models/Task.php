@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\Priority;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Task extends Model
 {
@@ -11,11 +13,19 @@ class Task extends Model
 
     protected $fillable = [
         'title',
+        'description',
         'completed',
         'due_date',
-        'priority',
         'archived',
-        'attachments',
-        'tags'
+        'attachment',
+        'tags',
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function priority() {
+        return $this->belongsTo(Priority::class);
+    }
 }

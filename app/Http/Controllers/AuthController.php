@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     public function register (Request $request) {
-        $fields = $request->all([
+        $fields = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed'
@@ -43,12 +43,16 @@ class AuthController extends Controller
         }
         else if(!$user) {
             return response()->json([
-                'message' => ''
+                'errors' => [
+                    'email' => ['The email does not exist.']
+                ]
             ], 404);
         }
         else {
             return response()->json([
-                'message' => 'The provided credentials are incorrect.'
+                'errors' => [
+                    'email' => ['Wrong email or password.']
+                ]
             ], 422);
         }
     }

@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->text('description');
             $table->boolean('completed');
-            $table->datetime('due_date');
-            $table->int('priority');
+            $table->date('due_date');
+            $table->foreignId('priority_id')->constrained();
             $table->boolean('archived');
-            $table->text('attachments');
+            $table->text('attachment');
             $table->text('tags');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
