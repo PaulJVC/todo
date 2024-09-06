@@ -5,6 +5,7 @@
 /public/storage
 /storage/*.key
 /vendor
+/db.sqlite3
 .env
 .env.backup
 .env.production

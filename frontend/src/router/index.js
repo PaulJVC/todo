@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import RegisterView from "../views/Auth/RegisterView.vue";
 import LoginView from "../views/Auth/LoginView.vue";
+import CreateView from "@/views/Tasks/CreateView.vue";
+import TasksView from "@/views/Tasks/TasksView.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const router = createRouter({
@@ -25,6 +27,18 @@ const router = createRouter({
       component: LoginView,
       meta: { guest: true },
     },
+    {
+      path: "/create",
+      name: "create",
+      meta: { auth: true },
+      component: CreateView,
+    },
+    {
+      path: "/tasks/:id",
+      name: "tasks",
+      component: TasksView,
+      meta : { auth: true }
+    },
   ],
 });
 
@@ -39,6 +53,7 @@ router.beforeEach(async (to, from) => {
   if (!authStore.user && to.meta.auth) {
     return { name: "login" };
   }
+  
 });
 
 export default router;
