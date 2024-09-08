@@ -2,10 +2,16 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 
 export default defineConfig({
   plugins: [
-    vue(),
+    vue({
+      template: {
+        transformAssetUrls
+      }
+    }),
+    quasar()
   ],
   resolve: {
     alias: {
@@ -19,7 +25,7 @@ export default defineConfig({
         chargeOrigin: true,
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json",
+          // "Content-Type": "application/json",
         },
       },
     },

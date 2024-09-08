@@ -1,25 +1,35 @@
 <script setup>
+import { useAuthStore } from "@/stores/auth";
+import { useTasksStore } from "@/stores/tasks";
 import { storeToRefs } from "pinia";
 import { onMounted, reactive, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { useTasksStore } from "@/stores/tasks";
-// import 'vanillajs-datepicker/css/datepicker-bulma.css';
-// import Datepicker from "vanillajs-datepicker/Datepicker";
 
-const { createUserTask } = useTasksStore();
+const { user } = storeToRefs(useAuthStore());
 const { errors } = storeToRefs(useTasksStore());
+const { getTask, updateUserTask, downloadAttachment } = useTasksStore();
+
+const router = useRouter();
+const route = useRoute();
+
+const task = ref(null);
 
 const formData = reactive({
   title: "",
   description: "",
   due_date: "",
   priority: "",
-  attachment: null,
-  tags: [],
+  attachment: "",
+  tags: "",
+  completed: "",
 })
 
 const newTag = ref('');
+const fileUrl = ref('');
+const fileName = ref('');
 
 const handleFileUpload = (event) => {
   formData.attachment = event.target.files[0];
@@ -36,26 +46,44 @@ const removeTag = (index) => {
   formData.tags.splice(index, 1);
 }
 
-onMounted(() => {
+onMounted(async () => {
   errors.value = {}
+  
+  task.value = await getTask(route.params.id);
+  fileUrl.value = task.value.fileURL;
+  fileName.value = task.value.fileName;
+
+  console.log(task.value.tasks.title, task.value.tasks.description, task.value.fileURL, 'task value')
+
+  if (task.value.tasks.user_id !== user.value.id) {
+    router.push({ name: "home" });
+  } else {
+    formData.title = task.value.tasks.title;
+    formData.description = task.value.tasks.description;
+    formData.due_date = task.value.tasks.due_date;
+    formData.priority = task.value.tasks.priority_id;
+    formData.tags = task.value.tasks.tags.split(',');
+    formData.completed = task.value.tasks.completed ? true : false;
+  }
 });
 
 </script>
 
 <template>
-    <h1 class="title">Create a new task</h1>
+  <main>
+    <h1 class="title">Update this task</h1>
 
     <form
-      @submit.prevent="createUserTask(formData)"
+      @submit.prevent="updateUserTask(task, formData)"
       class="w-1/2 mx-auto space-y-6"
     >
       <div>
-        <input type="text" placeholder="Title" v-model="formData.title" />
+        <input type="text" placeholder="Title" v-model="formData.title" />{{ formData.title }}
         <p v-if="errors.title" class="error">{{ errors.title[0] }}</p>
       </div>
 
       <div>
-        <input type="text" placeholder="Description" v-model="formData.description" />
+        <input type="text" placeholder="Description" v-model="formData.description" />{{ formData.description }}
         <p v-if="errors.description" class="error">{{ errors.description[0] }}</p>
       </div>
 
@@ -78,6 +106,12 @@ onMounted(() => {
         <label for="file">Upload a file</label>
         <input type="file" name="file" @change="handleFileUpload" />
         <p v-if="errors.attachment" class="error">{{ errors.attachment[0] }}</p>
+      </div>
+
+      <div v-if="fileUrl">
+        <p>Uploaded File:</p>
+        <!-- <a :href="fileUrl" target="_blank">View File</a> -->
+        <q-btn @click="downloadAttachment(task.tasks.id)">{{ fileName }}</q-btn>
       </div>
 
       <div>
@@ -106,8 +140,14 @@ onMounted(() => {
         </div>
       </div>
 
+      <div>
+        <label for="completed">Completed?</label>
+        <q-checkbox name="completed" v-model="formData.completed" />
+      </div>
+
       <button class="primary-btn">Submit</button>
     </form>
+  </main>
 </template>
 
 <style scoped>

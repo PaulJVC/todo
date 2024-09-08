@@ -16,12 +16,14 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->boolean('completed');
-            $table->date('due_date');
-            $table->foreignId('priority_id')->constrained();
+            $table->date('due_date')->nullable();
+            $table->foreignId('priority_id')->constrained()->nullable();
             $table->boolean('archived');
-            $table->text('attachment');
-            $table->text('tags');
+            $table->text('attachment')->nullable();
+            $table->text('attachment_name')->nullable();
+            $table->text('tags')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->integer('order');
             $table->timestamps();
         });
     }

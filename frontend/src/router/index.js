@@ -5,6 +5,7 @@ import RegisterView from "../views/Auth/RegisterView.vue";
 import LoginView from "../views/Auth/LoginView.vue";
 import CreateView from "@/views/Tasks/CreateView.vue";
 import TasksView from "@/views/Tasks/TasksView.vue";
+import UpdateView from "@/views/Tasks/UpdateView.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const router = createRouter({
@@ -30,11 +31,17 @@ const router = createRouter({
     {
       path: "/create",
       name: "create",
-      meta: { auth: true },
       component: CreateView,
+      meta: { auth: true },
     },
     {
-      path: "/tasks/:id",
+      path: "/update/:id",
+      name: "update",
+      component: UpdateView,
+      meta: { auth: true },
+    },
+    {
+      path: "/tasks",
       name: "tasks",
       component: TasksView,
       meta : { auth: true }

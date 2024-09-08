@@ -14,6 +14,7 @@ export const useAuthStore = defineStore("authStore", {
         const res = await fetch("/api/user", {
           headers: {
             authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
           },
         });
         const data = await res.json();
@@ -26,11 +27,13 @@ export const useAuthStore = defineStore("authStore", {
     async authenticate(apiRoute, formData) {
       const res = await fetch(`/api/${apiRoute}`, {
         method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(formData),
       });
 
       const data = await res.json();
-      console.log(data);
       if (data.errors) {
         this.errors = data.errors;
       } else {
@@ -46,6 +49,7 @@ export const useAuthStore = defineStore("authStore", {
         method: "post",
         headers: {
           authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
         },
       });
 
