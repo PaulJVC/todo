@@ -23,8 +23,8 @@ const formData = reactive({
   due_date: "",
   priority: "",
   attachment: "",
-  tags: "",
-  completed: "",
+  tags: [],
+  completed: 0
 })
 
 const newTag = ref('');
@@ -48,13 +48,9 @@ const removeTag = (index) => {
 
 onMounted(async () => {
   errors.value = {}
-  
   task.value = await getTask(route.params.id);
   fileUrl.value = task.value.fileURL;
   fileName.value = task.value.fileName;
-
-  console.log(task.value.tasks.title, task.value.tasks.description, task.value.fileURL, 'task value')
-
   if (task.value.tasks.user_id !== user.value.id) {
     router.push({ name: "home" });
   } else {
@@ -63,14 +59,13 @@ onMounted(async () => {
     formData.due_date = task.value.tasks.due_date;
     formData.priority = task.value.tasks.priority_id;
     formData.tags = task.value.tasks.tags.split(',');
-    formData.completed = task.value.tasks.completed ? true : false;
+    formData.completed = task.value.tasks.completed;
   }
 });
-
 </script>
 
 <template>
-  <main>
+  <q-page>
     <h1 class="title">Update this task</h1>
 
     <form
@@ -78,18 +73,18 @@ onMounted(async () => {
       class="w-1/2 mx-auto space-y-6"
     >
       <div>
-        <input type="text" placeholder="Title" v-model="formData.title" />{{ formData.title }}
-        <p v-if="errors.title" class="error">{{ errors.title[0] }}</p>
+        <input type="text" placeholder="Title" v-model="formData.title" />
+        <!-- <p v-if="errors.title" class="error">{{ errors.title[0] }}</p> -->
       </div>
 
       <div>
-        <input type="text" placeholder="Description" v-model="formData.description" />{{ formData.description }}
-        <p v-if="errors.description" class="error">{{ errors.description[0] }}</p>
+        <input type="text" placeholder="Description" v-model="formData.description" />
+        <!-- <p v-if="errors.description" class="error">{{ errors.description[0] }}</p> -->
       </div>
 
       <div>
         <VueDatePicker placeholder="Due Date" v-model="formData.due_date" model-type="yyyy-MM-dd" format="yyyy-MM-dd" type="date" :lowerLimit="new Date()"></VueDatePicker>
-        <p v-if="errors.due_date" class="error">{{ errors.due_date[0] }}</p>
+        <!-- <p v-if="errors.due_date" class="error">{{ errors.due_date[0] }}</p> -->
       </div>
 
       <div>
@@ -105,7 +100,7 @@ onMounted(async () => {
       <div>
         <label for="file">Upload a file</label>
         <input type="file" name="file" @change="handleFileUpload" />
-        <p v-if="errors.attachment" class="error">{{ errors.attachment[0] }}</p>
+        <!-- <p v-if="errors.attachment" class="error">{{ errors.attachment[0] }}</p> -->
       </div>
 
       <div v-if="fileUrl">
@@ -142,12 +137,19 @@ onMounted(async () => {
 
       <div>
         <label for="completed">Completed?</label>
-        <q-checkbox name="completed" v-model="formData.completed" />
+        <q-checkbox 
+          name="completed" 
+          v-model="formData.completed" 
+          :true-value="1"
+          :false-value="0"
+        />
       </div>
+
+      <input type="hidden" name="_method" value="PUT">
 
       <button class="primary-btn">Submit</button>
     </form>
-  </main>
+  </q-page>
 </template>
 
 <style scoped>

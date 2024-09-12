@@ -17,8 +17,11 @@ Route::apiResource('posts', PostController::class);
 Route::get('/task/{task}', [TaskController::class, 'getTask']);
 Route::get('/task/user/{user_id}', [TaskController::class, 'getUserTask']);
 Route::post('/task', [TaskController::class, 'storeTask']);
-Route::put('/task/update/{task}', [TaskController::class, 'updateTask']);
+Route::put('/task/delete/{task}', [TaskController::class, 'destroy']);
+Route::post('/task/{task}', [TaskController::class, 'updateTask']);
+Route::put('/task/{task}', [TaskController::class, 'updateTask']);
 Route::get('/task/download/{task}', [TaskController::class, 'downloadAttachment']);
+
 
 //Authentication Routes
 Route::post('/register', [AuthController::class, 'register']);

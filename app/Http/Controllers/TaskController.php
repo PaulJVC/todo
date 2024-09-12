@@ -89,7 +89,8 @@ class TaskController extends Controller implements HasMiddleware
                 p.name
             FROM tasks t
             LEFT JOIN priorities p ON p.id = t.priority_id
-            WHERE t.user_id = ?;
+            WHERE t.user_id = ?
+            AND t.archived = 0;
         ', [$user_id]);
 
         return $tasks;
@@ -118,14 +119,16 @@ class TaskController extends Controller implements HasMiddleware
     {
         Gate::authorize('modify', $task);
         $fields = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
+            'title' => 'nullable',
+            'description' => 'nullable',
             'due_date' => 'nullable|date|date_format:Y-m-d|after:yesterday',
             'attachment' => 'nullable|file|max:10240',
             'priority' => 'nullable',
             'tags' => 'nullable',
             'completed' => 'boolean',
         ]);
+
+        $fields = $request;
 
         $task->title = $fields['title'];
         $task->description = $fields['description'];
@@ -150,7 +153,7 @@ class TaskController extends Controller implements HasMiddleware
             $task->tags = $fields['tags'];
         }
 
-        $task->update($fields);
+        $task->update();
 
         return $task;
     }
@@ -158,14 +161,23 @@ class TaskController extends Controller implements HasMiddleware
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
-    {
+    public function destroy(Request $request, Task $task)
+    {   
         Gate::authorize('modify', $task);
-        return 'destroy';
+
+        $task->archived = 1;
+        $task->update();
+        return response()->json([
+            'message' => 'Successfully deleted task'
+        ]);
     }
 
     public function downloadAttachment(Task $task) {
         // return $task->attachment;
         return Storage::download($task->attachment, $task->attachment_name);
+    }
+
+    public function filterData(Request $request) {
+        //filter code here
     }
 }

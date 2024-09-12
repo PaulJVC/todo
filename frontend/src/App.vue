@@ -87,9 +87,7 @@ const toggleLeftDrawer = () => {
     </q-drawer>
 
     <q-page-container>
-      <q-page class="">
         <RouterView />
-      </q-page>
     </q-page-container>
   </q-layout>
   <!-- <header>

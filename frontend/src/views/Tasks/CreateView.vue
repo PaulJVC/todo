@@ -43,71 +43,75 @@ onMounted(() => {
 </script>
 
 <template>
-    <h1 class="title">Create a new task</h1>
+  <q-page>
+    <q-card>
+      <h1 class="title">Create a new task</h1>
 
-    <form
-      @submit.prevent="createUserTask(formData)"
-      class="w-1/2 mx-auto space-y-6"
-    >
-      <div>
-        <input type="text" placeholder="Title" v-model="formData.title" />
-        <p v-if="errors.title" class="error">{{ errors.title[0] }}</p>
-      </div>
-
-      <div>
-        <input type="text" placeholder="Description" v-model="formData.description" />
-        <p v-if="errors.description" class="error">{{ errors.description[0] }}</p>
-      </div>
-
-      <div>
-        <VueDatePicker placeholder="Due Date" v-model="formData.due_date" model-type="yyyy-MM-dd" format="yyyy-MM-dd" type="date" :lowerLimit="new Date()"></VueDatePicker>
-        <p v-if="errors.due_date" class="error">{{ errors.due_date[0] }}</p>
-      </div>
-
-      <div>
-        <select name="Priority" v-model="formData.priority">
-          <option value="" disabled selected>Select a priority</option>
-          <option value="1">Low</option>
-          <option value="2">Normal</option>
-          <option value="3">High</option>
-          <option value="4">Urgent</option>
-        </select>
-      </div>
-
-      <div>
-        <label for="file">Upload a file</label>
-        <input type="file" name="file" @change="handleFileUpload" />
-        <p v-if="errors.attachment" class="error">{{ errors.attachment[0] }}</p>
-      </div>
-
-      <div>
-        <q-input
-          v-model="newTag"
-          label="Enter Tags"
-          @keydown.enter.prevent="addTag"
-          @keydown.prevent.tab="addTag"
-          dense
-          type="text"
-        >
-        </q-input>
-
-        <div class="q-mt-md">
-          <q-chip
-            v-for="(tag, index) in formData.tags"
-            :key="index"
-            removable
-            @remove="removeTag(index)"
-            class="q-mr-xs"
-            color="primary"
-            outline
-          >
-            {{ tag }}
-          </q-chip>
+      <q-form
+        @submit.prevent="createUserTask(formData)"
+        class="w-1/2 mx-auto space-y-6"
+      >
+        <div>
+          <input type="text" placeholder="Title" v-model="formData.title" />
+          <p v-if="errors.title" class="error">{{ errors.title[0] }}</p>
         </div>
-      </div>
 
-      <button class="primary-btn">Submit</button>
-    </form>
+        <div>
+          <input type="text" placeholder="Description" v-model="formData.description" />
+          <p v-if="errors.description" class="error">{{ errors.description[0] }}</p>
+        </div>
+
+        <div>
+          <VueDatePicker placeholder="Due Date" v-model="formData.due_date" model-type="yyyy-MM-dd" format="yyyy-MM-dd" type="date" :lowerLimit="new Date()"></VueDatePicker>
+          <p v-if="errors.due_date" class="error">{{ errors.due_date[0] }}</p>
+        </div>
+
+        <div>
+          <select name="Priority" v-model="formData.priority">
+            <option value="" disabled selected>Select a priority</option>
+            <option value="1">Low</option>
+            <option value="2">Normal</option>
+            <option value="3">High</option>
+            <option value="4">Urgent</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="file">Upload a file</label>
+          <input type="file" name="file" @change="handleFileUpload" />
+          <p v-if="errors.attachment" class="error">{{ errors.attachment[0] }}</p>
+        </div>
+
+        <div>
+          <q-input
+            v-model="newTag"
+            label="Enter Tags"
+            @keydown.enter.prevent="addTag"
+            @keydown.prevent.tab="addTag"
+            dense
+            type="text"
+          >
+          </q-input>
+
+          <div class="q-mt-md">
+            <q-chip
+              v-for="(tag, index) in formData.tags"
+              :key="index"
+              removable
+              @remove="removeTag(index)"
+              class="q-mr-xs"
+              color="primary"
+              outline
+            >
+              {{ tag }}
+            </q-chip>
+          </div>
+        </div>
+
+        <button class="primary-btn">Submit</button>
+      </q-form>
+    </q-card>
+  </q-page>
 </template>
 
 <style scoped>

@@ -2,9 +2,11 @@
 </script>
 
 <template>
-  <main>
-    <h1 class="title">
-      Welcome
-    </h1>
-  </main>
+  <q-page>
+    <q-card class="q-pa-lg q-mt-lg">
+      <h1 class="title">
+        Welcome
+      </h1>
+    </q-card>
+  </q-page>
 </template>

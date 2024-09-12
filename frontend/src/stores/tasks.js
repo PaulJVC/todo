@@ -117,6 +117,8 @@ export const useTasksStore = defineStore("tasksStore", {
       const formData = new FormData();
       const authStore = useAuthStore();
 
+      console.log(form, 'form in updateUserTask');
+
       Object.entries(form).forEach(([key, value]) => {
         if (Array.isArray(value)) {
           // Handle arrays (e.g., tags)
@@ -130,31 +132,51 @@ export const useTasksStore = defineStore("tasksStore", {
         }
       });
 
-      formData.append('teest', 'test again')
+      for (const [key, value] of formData.entries()) {
+        console.log(key, value, 'after formData.append()');
+      }
+
       if (authStore.user.id === task.tasks.user_id) {
-        const res = await fetch(`/api/task/update/${task.tasks.id}`, {
-          method: "PUT",
+        const res = await fetch(`/api/task/${task.tasks.id}`, {
+          method: "POST",
           headers: {
             authorization: `Bearer ${localStorage.getItem("token")}`,
           },
+          body: formData
         })
-        
-        if(res.status === 422) {
-          const errorData = await res.json();
+
+        if(!res.ok) {
+          const errorData = await res;
           this.errors = errorData.errors;
           console.error('Validation errors:', errorData);
         }else {
-          const responseData = await res.json();
+          const responseData = await res;
           console.log('Success:', responseData);
           this.router.push({ name: "home" });
           this.errors = {};
         }
       }
     },
-
     /******************* Delete Task *******************/
-    async deleteUserTask(data) {
-
+    async deleteUserTask(id) {
+      const res = await fetch(`/api/task/delete/${id}`, {
+        method: "PUT",
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json"
+        },
+      })
+      
+      if(!res.ok) {
+        const errorData = await res;
+        this.errors = errorData.errors;
+        console.error('Errors:', errorData);
+      }else {
+        const responseData = await res;
+        console.log('Success:', responseData);
+        this.router.push({ name: "home" });
+        this.errors = {};
+      }
     }
   }
 });
