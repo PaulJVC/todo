@@ -6,9 +6,9 @@ export default {
   ],
   theme: {
     extend: {
-      maxWidth: {
-        '3/4': '75%',
-      }
+      fontFamily: {
+        sans: ['Poppins', 'Arial', 'sans-serif'], // Replace 'MyCustomFont' with your font
+      },
     },
   },
   plugins: [],
